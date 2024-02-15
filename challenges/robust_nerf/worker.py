@@ -99,7 +99,7 @@ def parse_flags():
   parser.set_defaults(
       # Default is 1 for optical flow (unused here)
       frame_start=1,
-      frame_end=301,  # Controls number of rendered frames per scene.
+      frame_end=30,  # Controls number of rendered frames per scene.
       frame_rate=12,
       resolution=(256, 256),
   )
@@ -238,9 +238,10 @@ def main(flags) -> None:
   kb.log_my_flags(flags)
   scratch_dir, output_dir = kb.setup_directories(flags)
 
-  if flags.seed is None:
-    raise ValueError("You must specify --seed to proceed.")
-  seed = flags.seed
+  # if flags.seed is None:
+    # raise ValueError("You must specify --seed to proceed.")
+  # seed = flags.seed
+  seed = 3
   rng = np.random.RandomState(seed=seed)
 
   scene = kb.Scene.from_flags(flags)
