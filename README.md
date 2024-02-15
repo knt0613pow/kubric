@@ -1,3 +1,17 @@
+# Generate MultiGSO Object Multi View Rendering
+```
+git clone https://github.com/knt0613pow/kubric.git
+cd kubric
+docker pull kubricdockerhub/kubruntu
+docker run --rm --interactive \
+           --user $(id -u):$(id -g) \
+           --volume "$(pwd):/kubric" \
+           kubricdockerhub/kubruntu \
+           bash gso_multi_scene.sh
+ls output
+```
+
+
 # Kubric
 
 [![Blender](https://github.com/google-research/kubric/actions/workflows/blender.yml/badge.svg?branch=main)](https://github.com/google-research/kubric/actions/workflows/blender.yml)
