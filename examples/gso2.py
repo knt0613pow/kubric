@@ -139,6 +139,7 @@ if __name__ == "__main__":
   # for frame in range(FLAGS.num_camera):
     # scene.camera.position = cameras[frame]
     # scene.camera.look_at((0, 0, 0))
+  breakpoint()
   scene.camera.position = cameras[0]
   scene.camera.look_at((0, 0, 0))
   
