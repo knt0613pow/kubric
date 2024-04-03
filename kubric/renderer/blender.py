@@ -187,6 +187,7 @@ class Blender(core.View):
     if value:
       # call get_devices() to let Blender detect GPU devices
       bpy.context.preferences.addons["cycles"].preferences.get_devices()
+      bpy.context.preferences.addons["cycles"].preferences.compute_device_type = "CUDA"
       devices_used = [d.name for d in bpy.context.preferences.addons["cycles"].preferences.devices
                       if d.use]
       logger.info("Using the following GPU Device(s): %s", devices_used)
