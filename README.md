@@ -6,10 +6,13 @@ docker pull kubricdockerhub/kubruntu
 docker run --rm --interactive \
            --user $(id -u):$(id -g) \
            --volume "$(pwd):/kubric" \
-           kubricdockerhub/kubruntu \
+           --gpus all \
+           --env KUBRIC_USE_GPU=1 \
+           knt0613/kubric-gpu:cuda11.4.3-ubuntu20.04  \
            bash gso_multi_scene.sh
 ls output
 ```
+
 
 
 # Kubric
