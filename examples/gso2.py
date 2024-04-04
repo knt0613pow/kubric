@@ -6,7 +6,7 @@ from kubric.simulator import PyBullet
 from kubric.renderer import Blender
 import numpy as np
 
-
+logging.basicConfig(level="INFO")
 def get_linear_camera_motion_start_end(
     movement_speed: float,
     inner_radius: float = 8.,
@@ -139,7 +139,6 @@ if __name__ == "__main__":
   # for frame in range(FLAGS.num_camera):
     # scene.camera.position = cameras[frame]
     # scene.camera.look_at((0, 0, 0))
-  breakpoint()
   scene.camera.position = cameras[0]
   scene.camera.look_at((0, 0, 0))
   
