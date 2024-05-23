@@ -40,6 +40,13 @@ def get_fixedz_cameras(
     cameras.append(camera)
   return cameras
 
+# def adjust_segmentation_idxs(
+#     segmentation,
+#     all_assets_list,
+#     foreground_assets_list):
+#   new_segmentation = np.zeros_like(segmentation)
+#   for i, asset in enumerate(all_assets_list, start=1):
+
 
 if __name__ == "__main__":
   # --- Some configuration values 
@@ -191,26 +198,27 @@ if __name__ == "__main__":
   end = time.time()
   print(f"Rendering time: {end - start}")
 
+  # breakpoint()
   
   # --- Postprocessing
-  kb.compute_visibility(data_stack["segmentation"], scene.assets)
-  visible_foreground_assets = [asset for asset in scene.foreground_assets
-                              if np.max(asset.metadata["visibility"]) > 0]
-  visible_foreground_assets = sorted(  # sort assets by their visibility
-      visible_foreground_assets,
-      key=lambda asset: np.sum(asset.metadata["visibility"]),
-      reverse=True)
-
+  # kb.compute_visibility(data_stack["segmentation"], scene.assets)
+  # visible_foreground_assets = [asset for asset in scene.foreground_assets
+  #                             if np.max(asset.metadata["visibility"]) > 0]
+  # visible_foreground_assets = sorted(  # sort assets by their visibility
+  #     visible_foreground_assets,
+  #     key=lambda asset: np.sum(asset.metadata["visibility"]),
+  #     reverse=True)
+  # breakpoint()
   data_stack["segmentation"] = kb.adjust_segmentation_idxs(
       data_stack["segmentation"],
       scene.assets,
-      visible_foreground_assets)
-  scene.metadata["num_instances"] = len(visible_foreground_assets)
+      scene.foreground_assets)
+  # scene.metadata["num_instances"] = len(visible_foreground_assets)
 
   # Save to image files
   kb.write_image_dict(data_stack, output_dir /f"scene_{scene_number}"/ f"camera_0")
-  kb.post_processing.compute_bboxes(data_stack["segmentation"],
-                                    visible_foreground_assets)
+  # kb.post_processing.compute_bboxes(data_stack["segmentation"],
+                                    # visible_foreground_assets)
 
   # --- Metadata
   logging.info("Collecting and storing metadata for each object.")
@@ -218,12 +226,12 @@ if __name__ == "__main__":
       "flags": vars(FLAGS),
       "metadata": kb.get_scene_metadata(scene),
       "camera": kb.get_camera_info(scene.camera),
-      "instances": kb.get_instance_info(scene, visible_foreground_assets),
+      # "instances": kb.get_instance_info(scene, visible_foreground_assets),
   })
-  kb.write_json(filename=output_dir / f"scene_{scene_number}"/f"camera_0"/ "events.json", data={
-      "collisions":  kb.process_collisions(
-          collisions, scene, assets_subset=visible_foreground_assets),
-  })
+  # kb.write_json(filename=output_dir / f"scene_{scene_number}"/f"camera_0"/ "events.json", data={
+  #     "collisions":  kb.process_collisions(
+  #         collisions, scene, assets_subset=visible_foreground_assets),
+  # })
 
 
   for camera_number in range(1, FLAGS.num_camera):
@@ -232,24 +240,28 @@ if __name__ == "__main__":
     scene.camera.look_at((0, 0, 0))
     logging.info("Rendering the scene ...")
     data_stack = renderer.render(return_layers=("segmentation", "depth","rgba"))
-    kb.compute_visibility(data_stack["segmentation"], scene.assets)
-    visible_foreground_assets = [asset for asset in scene.foreground_assets
-                                if np.max(asset.metadata["visibility"]) > 0]
-    visible_foreground_assets = sorted(  # sort assets by their visibility
-        visible_foreground_assets,
-        key=lambda asset: np.sum(asset.metadata["visibility"]),
-        reverse=True)
+    # kb.compute_visibility(data_stack["segmentation"], scene.assets)
+    # visible_foreground_assets = [asset for asset in scene.foreground_assets
+    #                             if np.max(asset.metadata["visibility"]) > 0]
+    # visible_foreground_assets = sorted(  # sort assets by their visibility
+    #     visible_foreground_assets,
+    #     key=lambda asset: np.sum(asset.metadata["visibility"]),
+    #     reverse=True)
 
+    # data_stack["segmentation"] = kb.adjust_segmentation_idxs(
+    #     data_stack["segmentation"],
+    #     scene.assets,
+    #     visible_foreground_assets)
     data_stack["segmentation"] = kb.adjust_segmentation_idxs(
-        data_stack["segmentation"],
-        scene.assets,
-        visible_foreground_assets)
-    scene.metadata["num_instances"] = len(visible_foreground_assets)
+      data_stack["segmentation"],
+      scene.assets,
+      scene.foreground_assets)
+    # scene.metadata["num_instances"] = len(visible_foreground_assets)
 
     # Save to image files
     kb.write_image_dict(data_stack, output_dir/f"scene_{scene_number}"/ f"camera_{camera_number}")
-    kb.post_processing.compute_bboxes(data_stack["segmentation"],
-                                      visible_foreground_assets)
+    # kb.post_processing.compute_bboxes(data_stack["segmentation"],
+                                      # visible_foreground_assets)
 
     # --- Metadata
     logging.info("Collecting and storing metadata for each object.")
@@ -257,12 +269,12 @@ if __name__ == "__main__":
         "flags": vars(FLAGS),
         "metadata": kb.get_scene_metadata(scene),
         "camera": kb.get_camera_info(scene.camera),
-        "instances": kb.get_instance_info(scene, visible_foreground_assets),
+        # "instances": kb.get_instance_info(scene, visible_foreground_assets),
     })
-    kb.write_json(filename=output_dir /f"scene_{scene_number}"/ f"camera_{camera_number}"/ f"events.json", data={
-        "collisions":  kb.process_collisions(
-            collisions, scene, assets_subset=visible_foreground_assets),
-    })
+    # kb.write_json(filename=output_dir /f"scene_{scene_number}"/ f"camera_{camera_number}"/ f"events.json", data={
+        # "collisions":  kb.process_collisions(
+            # collisions, scene, assets_subset=visible_foreground_assets),
+    # })
     
   del simulator
 
