@@ -2,7 +2,7 @@
 ```
 git clone https://github.com/knt0613pow/kubric.git
 cd kubric
-docker pull kubricdockerhub/kubruntu
+docker pull knt0613/kubric-gpu:cuda11.4.3-ubuntu20.04
 docker run --rm --interactive \
            --user $(id -u):$(id -g) \
            --volume "$(pwd):/kubric" \
